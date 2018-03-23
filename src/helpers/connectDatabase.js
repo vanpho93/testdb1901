@@ -6,5 +6,5 @@ function getDatabaseUri() {
     return 'mongodb://localhost/project1901'
 }
 
-mongoose.connect('mongodb://localhost/project1901')
+mongoose.connect(getDatabaseUri())
 .catch(() => process.exit(1));
