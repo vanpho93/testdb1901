@@ -39,4 +39,8 @@ app.delete('/story/:_id', (req, res) => {
     .catch(error => res.status(404).send({ success: false, message: error.message }));
 });
 
+app.use((error, req, res, next) => {
+    res.status(500).send({ success: false, message: error.message });
+});
+
 module.exports = { app };
