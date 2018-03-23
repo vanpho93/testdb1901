@@ -1,7 +1,7 @@
 const express = require('express');
 const { json } = require('body-parser');
 
-const { Story } = require('./models/status.model');
+const { Story } = require('./models/story.model');
 
 const app = express();
 app.use(json());
