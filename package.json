@@ -10,7 +10,7 @@
     "supertest": "^3.0.0"
   },
   "scripts": {
-    "test": "nodemon --exec 'mocha -w --recursive'"
+    "test": "nodemon --exec mocha --recursive"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
