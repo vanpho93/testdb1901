@@ -15,4 +15,16 @@ describe('POST /story', () => {
         assert.equal(story.content, 'abcd');
         assert.equal(storyCount, 1);
     });
+
+    it('Cannot create new story without content', async () => {
+        const response = await request(app)
+        .post('/story')
+        .send({ content: '' });
+        assert.equal(response.body.success, false);
+        assert.equal(response.status, 400);
+        const story = await Story.findOne({});
+        const storyCount = await Story.count({});
+        assert.equal(story, null);
+        assert.equal(storyCount, 0);
+    });
 });
