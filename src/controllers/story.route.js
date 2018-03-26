@@ -10,9 +10,7 @@ storyRouter.get('/', (req, res) => {
 });
 
 storyRouter.post('/', (req, res) => {
-    const { content } = req.body;
-    const story = new Story({ content });
-    story.save()
+    Story.createStory(req.body.content)
     .then(story => res.status(201).send({ success: true, story }))
     .catch(error => res.status(400).send({ success: false, message: error.message }));
 });

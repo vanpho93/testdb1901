@@ -4,6 +4,13 @@ const storySchema = new mongoose.Schema({
     content: { type: String, trim: true, required: true }
 })
 
-const Story = mongoose.model('Story', storySchema);
+const StoryModel = mongoose.model('Story', storySchema);
+
+class Story extends StoryModel {
+    static createStory(content) {
+        const story = new Story({ content });
+        return story.save();
+    }
+}
 
 module.exports = { Story };
