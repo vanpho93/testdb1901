@@ -3,7 +3,7 @@ const request = require('supertest');
 const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
 
-describe.only('GET /story', () => {
+describe('GET /story', () => {
     it('Can get all stories', async () => {
         const story1 = new Story({ content: 'st1' });
         const story2 = new Story({ content: 'st2' });
