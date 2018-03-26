@@ -3,7 +3,7 @@ const request = require('supertest');
 const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
 
-describe.only('PUT /story/:_id', () => {
+describe('PUT /story/:_id', () => {
     let storyId1;
     beforeEach('Create 2 stories for test', async () => {
         const story1 = new Story({ content: 'st1' });
