@@ -25,7 +25,7 @@ app.put('/story/:_id', (req, res) => {
     Story.findByIdAndUpdate(req.params._id, { content })
     .then(story => {
         if (!story) throw new Error('Cannot find story.');
-        res.status(201).send({ success: true, story });
+        res.send({ success: true, story });
     })
     .catch(error => res.status(400).send({ success: false, message: error.message }));
 });
