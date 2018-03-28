@@ -16,21 +16,14 @@ storyRouter.post('/', (req, res) => {
 });
 
 storyRouter.put('/:_id', (req, res) => {
-    const { content } = req.body;
-    Story.findByIdAndUpdate(req.params._id, { content })
-    .then(story => {
-        if (!story) throw new Error('Cannot find story.');
-        res.send({ success: true, story });
-    })
+    Story.updateStory(req.params._id, req.body.content)
+    .then(story => res.send({ success: true, story }))
     .catch(error => res.status(400).send({ success: false, message: error.message }));
 });
 
 storyRouter.delete('/:_id', (req, res) => {
-    Story.findByIdAndRemove(req.params._id)
-    .then(story => {
-        if (!story) throw new Error('Cannot find story.');
-        res.send({ success: true, story });
-    })
+    Story.removeStory(req.params._id)
+    .then(story => res.send({ success: true, story }))
     .catch(error => res.status(404).send({ success: false, message: error.message }));
 });
 
