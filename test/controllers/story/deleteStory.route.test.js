@@ -29,8 +29,9 @@ describe('DELETE /story/:_id', () => {
     it('Cannot delete story with wrong _id', async () => {
         const response = await request(app)
         .delete(`/story/${123}`);
-        assert.equal(response.status, 404);
+        assert.equal(response.status, 400);
         assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'INVALID_ID');
     });
 
     it('Cannot delete removed story', async () => {
@@ -40,5 +41,6 @@ describe('DELETE /story/:_id', () => {
         assert.equal(response.status, 404);
         assert.equal(response.body.success, false);
         assert.equal(response.body.message, 'Cannot find story.');
+        assert.equal(response.body.code, 'CANNOT_FIND_STORY');
     });
 });

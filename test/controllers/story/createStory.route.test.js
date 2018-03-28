@@ -22,6 +22,7 @@ describe('POST /story', () => {
         .send({ content: '' });
         assert.equal(response.body.success, false);
         assert.equal(response.status, 400);
+        assert.equal(response.body.code, 'INVALID_STORY_INFO');
         const story = await Story.findOne({});
         const storyCount = await Story.count({});
         assert.equal(story, null);

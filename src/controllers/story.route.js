@@ -3,6 +3,23 @@ const { Story } = require('../models/story.model');
 
 const storyRouter = express.Router();
 
+function handleError(res) {
+    return error => res.status(error.statusCode || 500).send({
+        success: false,
+        message: error.message,
+        code: error.code
+    })
+}
+
+storyRouter.use((req, res, next) => {
+    res.onError = error => res.status(error.statusCode || 500).send({
+        success: false,
+        message: error.message,
+        code: error.code
+    });
+    next();
+});
+
 storyRouter.get('/', (req, res) => {
     Story.find({})
     .then(stories => res.send({ success: true, stories }))
@@ -12,23 +29,19 @@ storyRouter.get('/', (req, res) => {
 storyRouter.post('/', (req, res) => {
     Story.createStory(req.body.content)
     .then(story => res.status(201).send({ success: true, story }))
-    .catch(error => res.status(400).send({ success: false, message: error.message }));
+    .catch(res.onError);
 });
 
 storyRouter.put('/:_id', (req, res) => {
     Story.updateStory(req.params._id, req.body.content)
     .then(story => res.send({ success: true, story }))
-    .catch(error => res.status(error.statusCode).send({
-        success: false,
-        message: error.message,
-        code: error.code
-    }));
+    .catch(res.onError);
 });
 
 storyRouter.delete('/:_id', (req, res) => {
     Story.removeStory(req.params._id)
     .then(story => res.send({ success: true, story }))
-    .catch(error => res.status(404).send({ success: false, message: error.message }));
+    .catch(res.onError);
 });
 
 module.exports = { storyRouter };
