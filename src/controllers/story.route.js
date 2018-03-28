@@ -18,7 +18,11 @@ storyRouter.post('/', (req, res) => {
 storyRouter.put('/:_id', (req, res) => {
     Story.updateStory(req.params._id, req.body.content)
     .then(story => res.send({ success: true, story }))
-    .catch(error => res.status(400).send({ success: false, message: error.message }));
+    .catch(error => res.status(error.statusCode).send({
+        success: false,
+        message: error.message,
+        code: error.code
+    }));
 });
 
 storyRouter.delete('/:_id', (req, res) => {

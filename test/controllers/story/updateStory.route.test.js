@@ -29,6 +29,7 @@ describe('PUT /story/:_id', () => {
         .send({ content: 'abcd' });
         assert.equal(response.status, 400);
         assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'INVALID_ID');
         const story = await Story.findOne({});
         assert.equal(story.content, 'st1');
     });
@@ -38,8 +39,19 @@ describe('PUT /story/:_id', () => {
         const response = await request(app)
         .put(`/story/${storyId1}`)
         .send({ content: 'xyz' })
-        assert.equal(response.status, 400);
+        assert.equal(response.status, 404);
         assert.equal(response.body.success, false);
         assert.equal(response.body.message, 'Cannot find story.');
+        assert.equal(response.body.code, 'CANNOT_FIND_STORY');
+    });
+
+    it('Cannot update story with empty content', async () => {
+        const response = await request(app)
+        .put(`/story/${storyId1}`)
+        .send({ content: '' });
+        assert.equal(response.status, 400);
+        assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'CONTENT_NOT_EMPTY');
+        assert.equal(response.body.message, 'Content should not be empty.');
     });
 });
