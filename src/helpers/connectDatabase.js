@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 function getDatabaseUri() {
     if (process.env.NODE_ENV === 'test') return 'mongodb://localhost/project1901-test';
@@ -6,5 +7,5 @@ function getDatabaseUri() {
     return 'mongodb://localhost/project1901'
 }
 
-mongoose.connect(getDatabaseUri())
+mongoose.connect(getDatabaseUri(), { useMongoClient: true })
 .catch(() => process.exit(1));
