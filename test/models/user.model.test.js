@@ -22,6 +22,19 @@ describe('Model User.signIn', () => {
     });
 
     it('Can sign in with username and password', async () => {
-        
+        const user = await User.signIn('teo@gmail.com', '321');
+        assert.equal(user.name, 'Teo');
+    });
+
+    it('Cannot sign in with wrong email', async () => {
+        const error = await User.signIn('teo1@gmail.com', '321')
+        .catch(error => error);
+        assert.equal(error.message, 'Invalid user info.');
+    });
+
+    it('Cannot sign in with wrong password', async () => {
+        const error = await User.signIn('teo@gmail.com', '123')
+        .catch(error => error);
+        assert.equal(error.message, 'Invalid user info.');
     });
 });
