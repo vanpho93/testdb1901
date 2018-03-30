@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { hash } = require('bcrypt');
+const { hash, compare } = require('bcrypt');
 // const { MyError } = require('./MyError.model');
 // const { validateObjectIds, validateStoryExist } = require('../helpers/validators');
 
@@ -16,6 +16,14 @@ class User extends UserModel {
         const password = await hash(plainPassword, 8);
         const user = new User({ name, email, password });
         return user.save();
+    }
+
+    static async signIn(email, password) {
+        const user = await User.findOne({ email });
+        if (!user) throw new Error('Invalid user info.');
+        const isSame = await compare(password, user.password);
+        if (!isSame) throw new Error('Invalid user info.');
+        return user;
     }
 }
 
