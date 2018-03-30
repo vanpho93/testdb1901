@@ -1,0 +1,22 @@
+const mongoose = require('mongoose');
+const { hash } = require('bcrypt');
+// const { MyError } = require('./MyError.model');
+// const { validateObjectIds, validateStoryExist } = require('../helpers/validators');
+
+const userSchema = new mongoose.Schema({
+    email: { type: String, trim: true, required: true, unique: true },
+    password: { type: String, trim: true, required: true },
+    name: { type: String, trim: true, required: true }
+});
+
+const UserModel = mongoose.model('User', userSchema);
+
+class User extends UserModel {
+    static async signUp(name, email, plainPassword) {
+        const password = await hash(plainPassword, 8);
+        const user = new User({ name, email, password });
+        return user.save();
+    }
+}
+
+module.exports = { User };
