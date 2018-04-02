@@ -43,7 +43,7 @@ describe('Model User.signIn', () => {
     });
 });
 
-describe.only('Model User.checkSignInStatus', () => {
+describe('Model User.checkSignInStatus', () => {
     let token;
 
     beforeEach('Get token for test', async () => {
@@ -54,16 +54,23 @@ describe.only('Model User.checkSignInStatus', () => {
 
     it('Can pass sign in status with token', async () => {
         const user = await User.checkSignInStatus(token);
-        // assert here
+        assert.equal(user.name, 'Teo');
+        assert.equal(user.password, undefined);
+        assert.equal(user.email, 'teo@gmail.com');
+        const { _id } = await verify(user.token);
+        assert.equal(user._id, _id);
     });
 
     it('Cannot pass sign in status with invalid token', async () => {
-        const user = await User.checkSignInStatus(token);
-        console.log(user);
+        const error = await User.checkSignInStatus('123').catch(error => error);
+        assert.equal(error.message, 'jwt malformed');
     });
 
     it('Cannot pass sign in status with token of removed user.', async () => {
-        const user = await User.checkSignInStatus(token);
-        console.log(user);
+        await User.signUp('Teo', 'teo2@gmail.com', '321');
+        const user = await User.signIn('teo2@gmail.com', '321');
+        await User.findByIdAndRemove(user._id);
+        const error = await User.checkSignInStatus(user.token).catch(error => error);
+        assert.equal(error.message, 'Invalid user info.');
     });
 });
