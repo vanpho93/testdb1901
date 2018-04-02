@@ -3,23 +3,6 @@ const { Story } = require('../models/story.model');
 
 const storyRouter = express.Router();
 
-function handleError(res) {
-    return error => res.status(error.statusCode || 500).send({
-        success: false,
-        message: error.message,
-        code: error.code
-    })
-}
-
-storyRouter.use((req, res, next) => {
-    res.onError = error => res.status(error.statusCode || 500).send({
-        success: false,
-        message: error.message,
-        code: error.code
-    });
-    next();
-});
-
 storyRouter.get('/', (req, res) => {
     Story.find({})
     .then(stories => res.send({ success: true, stories }))
