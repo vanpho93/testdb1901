@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { hash, compare } = require('bcrypt');
-const { sign } = require('../helpers/jwt');
+const { sign, verify } = require('../helpers/jwt');
 // const { MyError } = require('./MyError.model');
 // const { validateObjectIds, validateStoryExist } = require('../helpers/validators');
 
@@ -27,6 +27,17 @@ class User extends UserModel {
         const userInfo = user.toObject();
         const token = await sign({ _id: userInfo._id });
         userInfo.token = token;
+        delete userInfo.password;
+        return userInfo;
+    }
+
+    static async checkSignInStatus(token) {
+        const { _id } = await verify(token);
+        const user = await User.findById(_id);
+        if (!user) throw new Error('Invalid user info.');
+        const userInfo = user.toObject();
+        const newToken = await sign({ _id: userInfo._id });
+        userInfo.token = newToken;
         delete userInfo.password;
         return userInfo;
     }

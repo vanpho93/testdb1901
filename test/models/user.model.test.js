@@ -1,6 +1,7 @@
 const assert = require('assert');
 const { compare } = require('bcrypt');
 const { User } = require('../../src/models/user.model');
+const { verify } = require('../../src/helpers/jwt');
 
 describe('Model User.signUp', () => {
     it('Can sign up user', async () => {
@@ -21,10 +22,12 @@ describe('Model User.signIn', () => {
         await User.signUp('Ti', 'ti@gmail.com', '123');
     });
 
-    it.only('Can sign in with username and password', async () => {
+    it('Can sign in with username and password', async () => {
         const user = await User.signIn('teo@gmail.com', '321');
-        console.log(user);
         assert.equal(user.name, 'Teo');
+        const { token } = user;
+        const { _id } = await verify(token);
+        assert.equal(user._id, _id);
     });
 
     it('Cannot sign in with wrong email', async () => {
@@ -37,5 +40,30 @@ describe('Model User.signIn', () => {
         const error = await User.signIn('teo@gmail.com', '123')
         .catch(error => error);
         assert.equal(error.message, 'Invalid user info.');
+    });
+});
+
+describe.only('Model User.checkSignInStatus', () => {
+    let token;
+
+    beforeEach('Get token for test', async () => {
+        await User.signUp('Teo', 'teo@gmail.com', '321');
+        const user = await User.signIn('teo@gmail.com', '321');
+        token = user.token;
+    });
+
+    it('Can pass sign in status with token', async () => {
+        const user = await User.checkSignInStatus(token);
+        // assert here
+    });
+
+    it('Cannot pass sign in status with invalid token', async () => {
+        const user = await User.checkSignInStatus(token);
+        console.log(user);
+    });
+
+    it('Cannot pass sign in status with token of removed user.', async () => {
+        const user = await User.checkSignInStatus(token);
+        console.log(user);
     });
 });
