@@ -14,6 +14,27 @@ describe('Model User.signUp', () => {
         const isSame = await compare('123', user2.password);
         assert.equal(isSame, true);
     });
+
+    it('Cannot sign up without email', async () => {
+        const error = await User.signUp('Pho', '', '123').catch(error => error);
+        assert.equal(error.code, 'INVALID_USER_INFO')
+    });
+
+    it('Cannot sign up without name', async () => {
+        const error = await User.signUp('', 'pho@gmail.com', '123').catch(error => error);
+        assert.equal(error.code, 'INVALID_USER_INFO')
+    });
+
+    it('Cannot sign up without duplicated email', async () => {
+        await User.signUp('Pho', 'pho@gmail.com', '123');
+        const error = await User.signUp('Pho 2', 'pho@gmail.com', '1234').catch(error => error);
+        assert.equal(error.code, 'EMAIL_EXISTED');
+    });
+
+    it('Cannot sign up without password', async () => {
+        const error = await User.signUp('Pho', 'pho@gmail.com', '').catch(error => error);
+        assert.equal(error.code, 'INVALID_USER_INFO');
+    });
 });
 
 describe('Model User.signIn', () => {
@@ -43,7 +64,7 @@ describe('Model User.signIn', () => {
     });
 });
 
-describe.only('Model User.checkSignInStatus', () => {
+describe('Model User.checkSignInStatus', () => {
     let token;
 
     beforeEach('Get token for test', async () => {

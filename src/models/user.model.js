@@ -14,9 +14,16 @@ const UserModel = mongoose.model('User', userSchema);
 
 class User extends UserModel {
     static async signUp(name, email, plainPassword) {
+        if (!plainPassword) throw new MyError('Invalid user info.', 400, 'INVALID_USER_INFO');
         const password = await hash(plainPassword, 8);
-        const user = new User({ name, email, password });
-        return user.save();
+        try {
+            const user = new User({ name, email, password });
+            await user.save();
+            return user;
+        } catch (error) {
+            if (error.code) throw new MyError('Email existed.', 400, 'EMAIL_EXISTED');
+            throw new MyError('Invalid user info.', 400, 'INVALID_USER_INFO');
+        }
     }
 
     static async signIn(email, password) {
