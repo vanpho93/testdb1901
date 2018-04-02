@@ -17,4 +17,10 @@ function validateStoryExist(story) {
     }
 }
 
-module.exports = { validateObjectIds, validateStoryExist };
+function validateUserExist(user) {
+    if (!user) {
+        throw new MyError('Cannot find user.', 404, 'CANNOT_FIND_USER');
+    }
+}
+
+module.exports = { validateObjectIds, validateStoryExist, validateUserExist };

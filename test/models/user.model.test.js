@@ -1,7 +1,7 @@
 const assert = require('assert');
 const { compare } = require('bcrypt');
 const { User } = require('../../src/models/user.model');
-const { verify } = require('../../src/helpers/jwt');
+const { verify, sign } = require('../../src/helpers/jwt');
 
 describe('Model User.signUp', () => {
     it('Can sign up user', async () => {
@@ -33,17 +33,17 @@ describe('Model User.signIn', () => {
     it('Cannot sign in with wrong email', async () => {
         const error = await User.signIn('teo1@gmail.com', '321')
         .catch(error => error);
-        assert.equal(error.message, 'Invalid user info.');
+        assert.equal(error.code, 'INVALID_USER_INFO');
     });
 
     it('Cannot sign in with wrong password', async () => {
         const error = await User.signIn('teo@gmail.com', '123')
         .catch(error => error);
-        assert.equal(error.message, 'Invalid user info.');
+        assert.equal(error.code, 'INVALID_USER_INFO');
     });
 });
 
-describe('Model User.checkSignInStatus', () => {
+describe.only('Model User.checkSignInStatus', () => {
     let token;
 
     beforeEach('Get token for test', async () => {
@@ -63,7 +63,13 @@ describe('Model User.checkSignInStatus', () => {
 
     it('Cannot pass sign in status with invalid token', async () => {
         const error = await User.checkSignInStatus('123').catch(error => error);
-        assert.equal(error.message, 'jwt malformed');
+        assert.equal(error.code, 'INVALID_TOKEN');
+    });
+
+    it('Cannot pass sign in status with valid token but _id', async () => {
+        const token = await sign({ _id: '123' });
+        const error = await User.checkSignInStatus(token).catch(error => error);
+        assert.equal(error.code, 'INVALID_ID');
     });
 
     it('Cannot pass sign in status with token of removed user.', async () => {
@@ -71,6 +77,6 @@ describe('Model User.checkSignInStatus', () => {
         const user = await User.signIn('teo2@gmail.com', '321');
         await User.findByIdAndRemove(user._id);
         const error = await User.checkSignInStatus(user.token).catch(error => error);
-        assert.equal(error.message, 'Invalid user info.');
+        assert.equal(error.code, 'CANNOT_FIND_USER');
     });
 });

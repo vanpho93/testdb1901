@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const { hash, compare } = require('bcrypt');
 const { sign, verify } = require('../helpers/jwt');
-// const { MyError } = require('./MyError.model');
-// const { validateObjectIds, validateStoryExist } = require('../helpers/validators');
+const { MyError } = require('./MyError.model');
+const { validateObjectIds, validateUserExist } = require('../helpers/validators');
 
 const userSchema = new mongoose.Schema({
     email: { type: String, trim: true, required: true, unique: true },
@@ -21,9 +21,9 @@ class User extends UserModel {
 
     static async signIn(email, password) {
         const user = await User.findOne({ email });
-        if (!user) throw new Error('Invalid user info.');
+        if (!user) throw new MyError('Invalid user info', 400, 'INVALID_USER_INFO');
         const isSame = await compare(password, user.password);
-        if (!isSame) throw new Error('Invalid user info.');
+        if (!isSame) throw new MyError('Invalid user info', 400, 'INVALID_USER_INFO');
         const userInfo = user.toObject();
         const token = await sign({ _id: userInfo._id });
         userInfo.token = token;
@@ -33,8 +33,9 @@ class User extends UserModel {
 
     static async checkSignInStatus(token) {
         const { _id } = await verify(token);
+        validateObjectIds(_id);
         const user = await User.findById(_id);
-        if (!user) throw new Error('Invalid user info.');
+        validateUserExist(user);
         const userInfo = user.toObject();
         const newToken = await sign({ _id: userInfo._id });
         userInfo.token = newToken;
