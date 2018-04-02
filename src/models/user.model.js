@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { hash, compare } = require('bcrypt');
+const { sign } = require('../helpers/jwt');
 // const { MyError } = require('./MyError.model');
 // const { validateObjectIds, validateStoryExist } = require('../helpers/validators');
 
@@ -23,7 +24,11 @@ class User extends UserModel {
         if (!user) throw new Error('Invalid user info.');
         const isSame = await compare(password, user.password);
         if (!isSame) throw new Error('Invalid user info.');
-        return user;
+        const userInfo = user.toObject();
+        const token = await sign({ _id: userInfo._id });
+        userInfo.token = token;
+        delete userInfo.password;
+        return userInfo;
     }
 }
 

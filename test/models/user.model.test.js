@@ -21,8 +21,9 @@ describe('Model User.signIn', () => {
         await User.signUp('Ti', 'ti@gmail.com', '123');
     });
 
-    it('Can sign in with username and password', async () => {
+    it.only('Can sign in with username and password', async () => {
         const user = await User.signIn('teo@gmail.com', '321');
+        console.log(user);
         assert.equal(user.name, 'Teo');
     });
 
