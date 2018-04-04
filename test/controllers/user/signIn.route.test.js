@@ -5,7 +5,7 @@ const request = require('supertest');
 const { app } = require('../../../src/app');
 const { verify, sign } = require('../../../src/helpers/jwt');
 
-describe.only('POST /user/signin', () => {
+describe('POST /user/signin', () => {
     beforeEach('Sign up 2 users for test', async () => {
         await User.signUp('Teo', 'teo@gmail.com', '321');
         await User.signUp('Ti', 'ti@gmail.com', '123');
