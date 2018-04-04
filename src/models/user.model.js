@@ -7,7 +7,8 @@ const { validateObjectIds, validateUserExist } = require('../helpers/validators'
 const userSchema = new mongoose.Schema({
     email: { type: String, trim: true, required: true, unique: true },
     password: { type: String, trim: true, required: true },
-    name: { type: String, trim: true, required: true }
+    name: { type: String, trim: true, required: true },
+    stories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Story' }]
 });
 
 const UserModel = mongoose.model('User', userSchema);

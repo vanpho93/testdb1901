@@ -5,7 +5,7 @@ const request = require('supertest');
 const { app } = require('../../../src/app');
 const { verify, sign } = require('../../../src/helpers/jwt');
 
-describe.only('POST /user/check', () => {
+describe('POST /user/check', () => {
     let token, _id;
 
     beforeEach('Get token for test', async () => {

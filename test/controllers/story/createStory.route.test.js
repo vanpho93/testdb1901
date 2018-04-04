@@ -3,7 +3,7 @@ const request = require('supertest');
 const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
 
-describe('POST /story', () => {
+xdescribe('POST /story', () => {
     it('Can create new story', async () => {
         const response = await request(app)
         .post('/story')

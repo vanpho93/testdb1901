@@ -3,7 +3,7 @@ const request = require('supertest');
 const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
 
-describe('DELETE /story/:_id', () => {
+xdescribe('DELETE /story/:_id', () => {
     let storyId1, storyId2;
     beforeEach('Create 2 stories for test', async () => {
         const story1 = new Story({ content: 'st1' });
