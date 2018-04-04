@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { MyError } = require('./MyError.model');
 const { User } = require('./user.model');
-const { validateObjectIds, validateStoryExist } = require('../helpers/validators');
+const { validateObjectIds, validateStoryExist, validateUserExist } = require('../helpers/validators');
 
 const storySchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -14,12 +14,14 @@ class Story extends StoryModel {
     static async createStory(content, userId) {
         validateObjectIds(userId);
         try {
-            const story = new Story({ content, author: userId });
+            var story = new Story({ content, author: userId });
             await story.save();
-            await User.findByIdAndUpdate(userId, { $push: { stories: story._id } });
+            const user = await User.findByIdAndUpdate(userId, { $push: { stories: story._id } });
+            validateUserExist(user);
             return story;
         } catch (error) {
-            console.log(error);
+            await Story.findByIdAndRemove(story);
+            if (error instanceof MyError) throw error;
             throw new MyError('Invalid story info.', 400, 'INVALID_STORY_INFO');
         }
     }

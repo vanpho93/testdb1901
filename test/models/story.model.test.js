@@ -11,11 +11,15 @@ describe('Model User.createStory', () => {
         userId = user._id;
     });
 
-    it.only('Can create story', async () => {
+    xit('Can create story', async () => {
         await Story.createStory('abcd', userId);
         const story = await Story.findOne({}).populate('author');
         // console.log(story);
         const user = await User.findById(userId).populate('stories');
         console.log(user);
     });
+
+    xit('Cannot create story without content', async () => {})
+    xit('Cannot create story with invalid userId', async () => {})
+    xit('Cannot create story with removed userId', async () => {})
 });
