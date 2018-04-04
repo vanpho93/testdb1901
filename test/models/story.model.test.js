@@ -11,15 +11,38 @@ describe('Model User.createStory', () => {
         userId = user._id;
     });
 
-    xit('Can create story', async () => {
+    it('Can create story', async () => {
         await Story.createStory('abcd', userId);
         const story = await Story.findOne({}).populate('author');
-        // console.log(story);
+        assert.equal(story.content, 'abcd');
+        assert.equal(story.author._id, userId.toString());
         const user = await User.findById(userId).populate('stories');
-        console.log(user);
+        console.log(user.stories[0].content, 'abcd');
     });
 
-    xit('Cannot create story without content', async () => {})
-    xit('Cannot create story with invalid userId', async () => {})
-    xit('Cannot create story with removed userId', async () => {})
+    it('Cannot create story without content', async () => {
+        const error = await Story.createStory('', userId).catch(error => error);
+        assert.equal(error.code, 'INVALID_STORY_INFO');
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null);
+        const user = await User.findById(userId);
+        assert.equal(user.stories.length, 0);
+    })
+    it('Cannot create story with invalid userId', async () => {
+        const error = await Story.createStory('', '123').catch(error => error);
+        assert.equal(error.code, 'INVALID_ID');
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null);
+        const user = await User.findById(userId);
+        assert.equal(user.stories.length, 0);
+    });
+    it('Cannot create story with removed userId', async () => {
+        await User.findByIdAndRemove(userId);
+        const error = await Story.createStory('abcd', userId).catch(e => e);
+        assert.equal(error.code, 'CANNOT_FIND_USER');
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null);
+        const user = await User.findById(userId);
+        assert.equal(user, null);
+    });
 });
