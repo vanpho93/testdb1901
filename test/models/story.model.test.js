@@ -63,7 +63,7 @@ describe.only('Model User.updateStory', () => {
         const story1 = await Story.findOne({});
         assert.equal(story1.content, 'xyz');
     });
-    it.only('Cannot update story with other\'s userId', async () => {
+    it('Cannot update story with other\'s userId', async () => {
         const error = await Story.updateStory(idStory, userId2, 'xyz').catch(e => e);
         assert.equal(error.code, 'CANNOT_FIND_STORY');
         const story1 = await Story.findOne({});
@@ -71,14 +71,31 @@ describe.only('Model User.updateStory', () => {
     });
 
     it('Cannot update story without content', async () => {
+        const error = await Story.updateStory(idStory, userId1, '').catch(e => e);
+        assert.equal(error.code, 'CONTENT_NOT_EMPTY');
+        const story1 = await Story.findOne({});
+        assert.equal(story1.content, 'abcd');
     });
 
     it('Cannot update story with invalid userId', async () => {
+        const error = await Story.updateStory(idStory, 'abcd', '').catch(e => e);
+        assert.equal(error.code, 'INVALID_ID');
+        const story1 = await Story.findOne({});
+        assert.equal(story1.content, 'abcd');
     });
 
     it('Cannot update story with invalid idStory', async () => {
+        const error = await Story.updateStory('abcd', userId1, '').catch(e => e);
+        assert.equal(error.code, 'INVALID_ID');
+        const story1 = await Story.findOne({});
+        assert.equal(story1.content, 'abcd');
     });
 
     it('Cannot update removed story', async () => {
+        await Story.findByIdAndRemove(idStory);
+        const error = await Story.updateStory(idStory, userId1, 'xyz').catch(e => e);
+        assert.equal(error.code, 'CANNOT_FIND_STORY');
+        const story1 = await Story.findOne({});
+        assert.equal(story1, null);
     });
 });
