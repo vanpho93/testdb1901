@@ -112,6 +112,7 @@ describe.only('Model User.removeStory', () => {
     });
 
     it('Can remove story', async () => {
+        
     });
 
     it('Cannot remove story with other\'s userId', async () => {

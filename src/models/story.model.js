@@ -40,6 +40,8 @@ class Story extends StoryModel {
         validateObjectIds(idStory, idUser);
         const story = await Story.findOneAndRemove({ _id: idStory, author: idUser });
         validateStoryExist(story);
+        const user = await User.findByIdAndUpdate(idUser, { $pull: { stories: idStory } });
+        validateUserExist(user);
         return story;
     }
 }
