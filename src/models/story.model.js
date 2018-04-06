@@ -26,19 +26,19 @@ class Story extends StoryModel {
         }
     }
 
-    static async updateStory(idStory, content) {
-        validateObjectIds(idStory);
+    static async updateStory(idStory, idUser, content) {
+        validateObjectIds(idStory, idUser);
         if (!content) {
             throw new MyError('Content should not be empty.', 400, 'CONTENT_NOT_EMPTY');
         }
-        const story = await Story.findByIdAndUpdate(idStory, { content });
+        const story = await Story.findOneAndUpdate({ _id: idStory, author: idUser }, { content });
         validateStoryExist(story);
         return story;
     }
 
-    static async removeStory(idStory) {
-        validateObjectIds(idStory);
-        const story = await Story.findByIdAndRemove(idStory)
+    static async removeStory(idStory, idUser) {
+        validateObjectIds(idStory, idUser);
+        const story = await Story.findOneAndRemove({ _id: idStory, author: idUser });
         validateStoryExist(story);
         return story;
     }
