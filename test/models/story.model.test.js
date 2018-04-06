@@ -46,3 +46,29 @@ describe('Model User.createStory', () => {
         assert.equal(user, null);
     });
 });
+
+describe('Model User.updateStory', () => {
+    let userId;
+    beforeEach('Create user for test', async () => {
+        const user = await User.signUp('Teo', 'teo@gmail.com', '123');
+        userId = user._id;
+    });
+
+    it('Can update story', async () => {
+    });
+
+    it('Cannot update story with other\'s userId', async () => {
+    });
+
+    it('Cannot update story without content', async () => {
+    });
+
+    it('Cannot update story with invalid userId', async () => {
+    });
+
+    it('Cannot update story with invalid idStory', async () => {
+    });
+
+    it('Cannot update removed story', async () => {
+    });
+});
