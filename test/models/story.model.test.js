@@ -112,19 +112,40 @@ describe.only('Model User.removeStory', () => {
     });
 
     it('Can remove story', async () => {
-        
+        await Story.removeStory(idStory, userId1);
+        const story = await Story.findOne({});
+        assert.equal(story, null);
+        const user = await User.findById(userId1);
+        assert.equal(user.stories.length, 0);
     });
 
     it('Cannot remove story with other\'s userId', async () => {
+        const error = await Story.removeStory(idStory, userId2).catch(e => e);
+        assert.equal(error.code, 'CANNOT_FIND_STORY');
+        const story = await Story.findById(idStory);
+        assert.equal(story.content, 'abcd');
     });
 
     it('Cannot remove story with invalid userId', async () => {
+        const error = await Story.removeStory(idStory, 'abcd').catch(e => e);
+        assert.equal(error.code, 'INVALID_ID');
+        const story = await Story.findById(idStory);
+        assert.equal(story.content, 'abcd');
     });
 
     it('Cannot remove story with invalid idStory', async () => {
+        const error = await Story.removeStory('xyz', userId1).catch(e => e);
+        assert.equal(error.code, 'INVALID_ID');
+        const story = await Story.findById(idStory);
+        assert.equal(story.content, 'abcd');
     });
 
     it('Cannot remove a removed story', async () => {
+        await Story.findByIdAndRemove(idStory);
+        const error = await Story.removeStory(idStory, userId1).catch(e => e);
+        assert.equal(error.code, 'CANNOT_FIND_STORY');
+        const story = await Story.findById(idStory);
+        assert.equal(story, null);
     });
 });
 
