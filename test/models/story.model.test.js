@@ -47,17 +47,27 @@ describe('Model User.createStory', () => {
     });
 });
 
-describe('Model User.updateStory', () => {
-    let userId;
+describe.only('Model User.updateStory', () => {
+    let userId1, userId2, idStory;
     beforeEach('Create user for test', async () => {
-        const user = await User.signUp('Teo', 'teo@gmail.com', '123');
-        userId = user._id;
+        const user1 = await User.signUp('Teo', 'teo@gmail.com', '123');
+        const user2 = await User.signUp('Ti', 'ti@gmail.com', 'abc');
+        userId1 = user1._id;
+        userId2 = user2._id;
+        const story = await Story.createStory('abcd', userId1);
+        idStory = story._id;
     });
-
     it('Can update story', async () => {
+        const story = await Story.updateStory(idStory, userId1, 'xyz');
+        assert.equal(story.content, 'xyz');
+        const story1 = await Story.findOne({});
+        assert.equal(story1.content, 'xyz');
     });
-
-    it('Cannot update story with other\'s userId', async () => {
+    it.only('Cannot update story with other\'s userId', async () => {
+        const error = await Story.updateStory(idStory, userId2, 'xyz').catch(e => e);
+        assert.equal(error.code, 'CANNOT_FIND_STORY');
+        const story1 = await Story.findOne({});
+        assert.equal(story1.content, 'abcd');
     });
 
     it('Cannot update story without content', async () => {

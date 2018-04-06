@@ -31,7 +31,7 @@ class Story extends StoryModel {
         if (!content) {
             throw new MyError('Content should not be empty.', 400, 'CONTENT_NOT_EMPTY');
         }
-        const story = await Story.findOneAndUpdate({ _id: idStory, author: idUser }, { content });
+        const story = await Story.findOneAndUpdate({ _id: idStory, author: idUser }, { content }, { new: true });
         validateStoryExist(story);
         return story;
     }
