@@ -100,7 +100,7 @@ describe('Model User.updateStory', () => {
     });
 });
 
-describe.only('Model User.removeStory', () => {
+describe('Model User.removeStory', () => {
     let userId1, userId2, idStory;
     beforeEach('Create user for test', async () => {
         const user1 = await User.signUp('Teo', 'teo@gmail.com', '123');

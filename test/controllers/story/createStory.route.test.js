@@ -2,30 +2,32 @@ const assert = require('assert');
 const request = require('supertest');
 const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
+const { User } = require('../../../src/models/user.model.js');
 
-xdescribe('POST /story', () => {
-    it('Can create new story', async () => {
+describe('POST /story', () => {
+    let token, idUser;
+
+    beforeEach('Get token for test', async () => {
+        await User.signUp('Teo', 'teo@gmail.com', '321');
+        const user = await User.signIn('teo@gmail.com', '321');
+        token = user.token;
+        idUser = user._id;
+    });
+
+    it.only('Can create new story', async () => {
         const response = await request(app)
         .post('/story')
+        .set({ token })
         .send({ content: 'abcd' });
         assert.equal(response.body.success, true);
-        assert.equal(response.status, 201);
-        const story = await Story.findOne({});
-        const storyCount = await Story.count({});
+        assert.equal(response.body.story.content, 'abcd');
+        const story = await Story.findOne({}).populate('author');
         assert.equal(story.content, 'abcd');
-        assert.equal(storyCount, 1);
+        assert.equal(story.author._id, idUser.toString());
+        const user = await User.findById(idUser).populate('stories');
+        assert.equal(user.stories[0].content, 'abcd');
     });
 
     it('Cannot create new story without content', async () => {
-        const response = await request(app)
-        .post('/story')
-        .send({ content: '' });
-        assert.equal(response.body.success, false);
-        assert.equal(response.status, 400);
-        assert.equal(response.body.code, 'INVALID_STORY_INFO');
-        const story = await Story.findOne({});
-        const storyCount = await Story.count({});
-        assert.equal(story, null);
-        assert.equal(storyCount, 0);
     });
 });
