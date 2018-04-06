@@ -47,7 +47,7 @@ describe('Model User.createStory', () => {
     });
 });
 
-describe.only('Model User.updateStory', () => {
+describe('Model User.updateStory', () => {
     let userId1, userId2, idStory;
     beforeEach('Create user for test', async () => {
         const user1 = await User.signUp('Teo', 'teo@gmail.com', '123');
@@ -99,3 +99,31 @@ describe.only('Model User.updateStory', () => {
         assert.equal(story1, null);
     });
 });
+
+describe.only('Model User.removeStory', () => {
+    let userId1, userId2, idStory;
+    beforeEach('Create user for test', async () => {
+        const user1 = await User.signUp('Teo', 'teo@gmail.com', '123');
+        const user2 = await User.signUp('Ti', 'ti@gmail.com', 'abc');
+        userId1 = user1._id;
+        userId2 = user2._id;
+        const story = await Story.createStory('abcd', userId1);
+        idStory = story._id;
+    });
+
+    it('Can remove story', async () => {
+    });
+
+    it('Cannot remove story with other\'s userId', async () => {
+    });
+
+    it('Cannot remove story with invalid userId', async () => {
+    });
+
+    it('Cannot remove story with invalid idStory', async () => {
+    });
+
+    it('Cannot remove a removed story', async () => {
+    });
+});
+
