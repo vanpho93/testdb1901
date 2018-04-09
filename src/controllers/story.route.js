@@ -19,13 +19,13 @@ storyRouter.post('/', (req, res) => {
 });
 
 storyRouter.put('/:_id', (req, res) => {
-    Story.updateStory(req.params._id, req.body.content)
+    Story.updateStory(req.params._id, req.idUser, req.body.content)
     .then(story => res.send({ success: true, story }))
     .catch(res.onError);
 });
 
 storyRouter.delete('/:_id', (req, res) => {
-    Story.removeStory(req.params._id)
+    Story.removeStory(req.params._id, req.idUser)
     .then(story => res.send({ success: true, story }))
     .catch(res.onError);
 });
