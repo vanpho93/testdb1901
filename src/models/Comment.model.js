@@ -11,4 +11,6 @@ const commentSchema = new mongoose.Schema({
 
 const CommentModel = mongoose.model('Comment', commentSchema);
 
-export class Comment extends CommentModel {}
+class Comment extends CommentModel {}
+
+module.exports = { Comment };

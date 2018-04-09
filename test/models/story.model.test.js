@@ -17,7 +17,7 @@ describe('Model User.createStory', () => {
         assert.equal(story.content, 'abcd');
         assert.equal(story.author._id, userId.toString());
         const user = await User.findById(userId).populate('stories');
-        console.log(user.stories[0].content, 'abcd');
+        assert.equal(user.stories[0].content, 'abcd');
     });
 
     it('Cannot create story without content', async () => {

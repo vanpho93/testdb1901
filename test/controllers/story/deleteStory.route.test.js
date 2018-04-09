@@ -2,45 +2,39 @@ const assert = require('assert');
 const request = require('supertest');
 const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
+const { User } = require('../../../src/models/user.model.js');
 
-xdescribe('DELETE /story/:_id', () => {
-    let storyId1, storyId2;
-    beforeEach('Create 2 stories for test', async () => {
-        const story1 = new Story({ content: 'st1' });
-        const story2 = new Story({ content: 'st2' });
-        await story1.save();
-        await story2.save();
-        storyId1 = story1._id;
-        storyId2 = story2._id;
+describe.only('DELETE /story/:_id', () => {
+    let token1, idUser1, token2, idUser2, idStory;
+
+    beforeEach('Create story and get token for test', async () => {
+        await User.signUp('Teo', 'teo@gmail.com', '321');
+        await User.signUp('Ti', 'ti@gmail.com', '321');
+        const user1 = await User.signIn('teo@gmail.com', '321');
+        const user2 = await User.signIn('ti@gmail.com', '321');
+        token1 = user1.token;
+        idUser1 = user1._id;
+        token2 = user2.token;
+        idUser2 = user2._id;
+        const story = await Story.createStory('abcd', idUser1);
+        idStory = story._id
     });
 
-    it('Can delete story by _id', async () => {
-        const response = await request(app)
-        .delete(`/story/${storyId1}`);
-        assert.equal(response.status, 200);
-        assert.equal(response.body.success, true);
-        assert.equal(response.body.story._id, storyId1);
-        assert.equal(response.body.story.content, 'st1');
-        const stories = await Story.find({});
-        assert.equal(stories.length, 1);
-        assert.equal(stories[0].content, 'st2');
+    it('Can remove story', async () => {
     });
 
-    it('Cannot delete story with wrong _id', async () => {
-        const response = await request(app)
-        .delete(`/story/${123}`);
-        assert.equal(response.status, 400);
-        assert.equal(response.body.success, false);
-        assert.equal(response.body.code, 'INVALID_ID');
+    it('Cannot remove story without token', async () => {
     });
 
-    it('Cannot delete removed story', async () => {
-        await Story.findByIdAndRemove(storyId1);
-        const response = await request(app)
-        .delete(`/story/${storyId1}`);
-        assert.equal(response.status, 404);
-        assert.equal(response.body.success, false);
-        assert.equal(response.body.message, 'Cannot find story.');
-        assert.equal(response.body.code, 'CANNOT_FIND_STORY');
+    it('Cannot remove story with invalid token format', async () => {
+    });
+
+    it('Cannot remove story with other\'s token', async () => {
+    });
+
+    it('Cannot remove story with wrong story id', async () => {
+    });
+
+    it('Cannot remove a removed story', async () => {
     });
 });
