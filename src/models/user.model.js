@@ -8,7 +8,10 @@ const userSchema = new mongoose.Schema({
     email: { type: String, trim: true, required: true, unique: true },
     password: { type: String, trim: true, required: true },
     name: { type: String, trim: true, required: true },
-    stories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Story' }]
+    stories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Story' }],
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    incommingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    sentRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const UserModel = mongoose.model('User', userSchema);
