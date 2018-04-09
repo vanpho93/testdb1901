@@ -4,7 +4,7 @@ const { app } = require('../../../src/app');
 const { Story } = require('../../../src/models/story.model.js');
 const { User } = require('../../../src/models/user.model.js');
 
-describe('POST /story', () => {
+describe.only('POST /story', () => {
     let token, idUser;
 
     beforeEach('Get token for test', async () => {
@@ -14,7 +14,7 @@ describe('POST /story', () => {
         idUser = user._id;
     });
 
-    it.only('Can create new story', async () => {
+    it('Can create new story', async () => {
         const response = await request(app)
         .post('/story')
         .set({ token })
@@ -29,5 +29,50 @@ describe('POST /story', () => {
     });
 
     it('Cannot create new story without content', async () => {
+        const response = await request(app)
+        .post('/story')
+        .set({ token })
+        .send({ content: '' });
+        assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'INVALID_STORY_INFO');
+        assert.equal(response.status, 400);
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null);        
+    });
+
+    it('Cannot create new story without token', async () => {
+        const response = await request(app)
+        .post('/story')
+        .send({ content: '' });
+        assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'INVALID_TOKEN');
+        assert.equal(response.status, 400);
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null); 
+    });
+
+    it('Cannot create new story wrong token', async () => {
+        const response = await request(app)
+        .post('/story')
+        .set({ token: '1.2.3' })
+        .send({ content: '' });
+        assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'INVALID_TOKEN');
+        assert.equal(response.status, 400);
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null); 
+    });
+
+    it('Cannot create new story for removed user', async () => {
+        await User.findByIdAndRemove(idUser);
+        const response = await request(app)
+        .post('/story')
+        .set({ token })
+        .send({ content: 'abcd' });
+        assert.equal(response.body.success, false);
+        assert.equal(response.body.code, 'CANNOT_FIND_USER');
+        assert.equal(response.status, 404);
+        const story = await Story.findOne({}).populate('author');
+        assert.equal(story, null); 
     });
 });
