@@ -1,6 +1,6 @@
 - Dang ky - dang nhap - check (Lay ra cac bai viet cua chinh user)
 
-- Dang bai, xoa bai, sua bai, lay ra bai viet cua moi nguoi
+- Dang bai, xoa bai, sua bai, lay ra bai viet cua moi nguoi (Khi xoa bai viet, xoa cac binh luan)
 
 - Binh luan bai viet, xoa binh luan
 
