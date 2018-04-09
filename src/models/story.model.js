@@ -6,7 +6,8 @@ const { validateObjectIds, validateStoryExist, validateUserExist } = require('..
 const storySchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     content: { type: String, trim: true, required: true },
-    fans: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    fans: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
 const StoryModel = mongoose.model('Story', storySchema);
