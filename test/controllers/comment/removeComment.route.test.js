@@ -5,7 +5,7 @@ const { Story } = require('../../../src/models/story.model.js');
 const { Comment } = require('../../../src/models/comment.model');
 const { User } = require('../../../src/models/user.model.js');
 
-describe.only('PUT /comment', () => {
+describe('DELETE /comment/:id', () => {
     let token1, idUser1, token2, idUser2, idStory, idComment;
 
     beforeEach('Create story and get token for test', async () => {

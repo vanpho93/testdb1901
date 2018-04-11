@@ -1,11 +1,12 @@
-- Dang ky - dang nhap - check (Lay ra cac bai viet cua chinh user) <can cap nhat>
+√ Dang ky
+√ dang nhap - check (Lay ra cac bai viet cua chinh user) <can cap nhat>
 
-- Dang bai, sua bai,
+√ Dang bai, sua bai,
 
-- xoa bai, (Khi xoa bai viet, xoa cac binh luan)
+≈ xoa bai, (Khi xoa bai viet, xoa cac binh luan)
 
 
-- Binh luan bai viet, xoa binh luan <dang lam>
+√ Binh luan bai viet, xoa binh luan
 
 - Like bai viet, bo like bai viet
 

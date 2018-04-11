@@ -31,7 +31,8 @@ class User extends UserModel {
     }
 
     static async signIn(email, password) {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email })
+        .populate({ path: 'stories', populate: { path: 'comments' } });
         if (!user) throw new MyError('Invalid user info', 400, 'INVALID_USER_INFO');
         const isSame = await compare(password, user.password);
         if (!isSame) throw new MyError('Invalid user info', 400, 'INVALID_USER_INFO');
@@ -45,7 +46,8 @@ class User extends UserModel {
     static async checkSignInStatus(token) {
         const { _id } = await verify(token);
         validateObjectIds(_id);
-        const user = await User.findById(_id);
+        const user = await User.findById(_id)
+        .populate({ path: 'stories', populate: { path: 'comments' } });
         validateUserExist(user);
         const userInfo = user.toObject();
         const newToken = await sign({ _id: userInfo._id });
