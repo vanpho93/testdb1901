@@ -19,7 +19,7 @@ class Comment extends CommentModel {
         if (!content) {
             throw new MyError('Content should not be empty.', 400, 'CONTENT_NOT_EMPTY');
         }
-        const comment = new Comment({ content, author: userId, story: idStory });
+        const comment = new Comment({ content, author: idUser, story: idStory });
         const updateObject = { $push: { comments: comment._id } };
         const story = await Story.findByIdAndUpdate(idStory, updateObject);
         validateStoryExist(story);
@@ -32,7 +32,8 @@ class Comment extends CommentModel {
         if (!comment) {
             throw new MyError('Cannot find comment', 404, 'CANNOT_FIND_COMMENT');
         }
-        await Story.findByIdAndUpdate(comment.story, { $pull: { comments: idComment } });
+        const story = await Story.findByIdAndUpdate(comment.story, { $pull: { comments: idComment } });
+        validateStoryExist(story)
         return comment;
     }
 }
