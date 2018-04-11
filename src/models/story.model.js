@@ -47,6 +47,22 @@ class Story extends StoryModel {
         validateUserExist(user);
         return story;
     }
+
+    static async likeStory(idUser, idStory) {
+        validateObjectIds(idStory, idUser);
+        const updateObj = { $addToSet: { fans: idUser } };
+        const story = await Story.findByIdAndUpdate(idStory, updateObj, { new: true });
+        validateStoryExist(story);
+        return story;
+    }
+
+    static async dislikeStory(idUser, idStory) {
+        validateObjectIds(idStory, idUser);
+        const updateObj = { $pull: { fans: idUser } };
+        const story = await Story.findByIdAndUpdate(idStory, updateObj, { new: true });
+        validateStoryExist(story);
+        return story;
+    }
 }
 
 module.exports = { Story };
