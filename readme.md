@@ -8,9 +8,9 @@
 
 √ Binh luan bai viet, xoa binh luan
 
-- Like bai viet, bo like bai viet
+√ Like bai viet, bo like bai viet
 
-- Like binh luan, bo like binh luan
+√ Like binh luan, bo like binh luan
 
 - Gui yeu cau ket ban,
     (khong) chap nhan ket ban, xoa yeu cau ket ban, xoa ket ban
