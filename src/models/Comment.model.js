@@ -40,7 +40,8 @@ class Comment extends CommentModel {
     static async likeComment(idUser, idComment) {
         validateObjectIds(idComment, idUser);
         const updateObj = { $addToSet: { fans: idUser } };
-        const comment = await Comment.findByIdAndUpdate(idComment, updateObj, { new: true });
+        const queryObj = { _id: idComment, fans: { $ne: idUser } };
+        const comment = await Comment.findOneAndUpdate(queryObj, updateObj, { new: true });
         if (!comment) throw new MyError('Cannot find comment', 404, 'CANNOT_FIND_COMMENT');
         return comment;
     }
