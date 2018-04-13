@@ -33,6 +33,20 @@ describe('POST /story/like/:_id', () => {
         assert.equal(story.fans[0].toString(), idUser2);
     });
 
+    it('Cannot like story twice', async () => {
+        await Story.likeStory(idUser2, idStory);
+        const response = await request(app)
+        .post(`/story/like/${idStory}`)
+        .set({ token: token2 })
+        .send({});
+        assert.equal(response.status, 404);
+        assert.equal(response.body.success, false);
+        assert.equal(response.body.story, null);
+        assert.equal(response.body.code, 'CANNOT_FIND_STORY');
+        const story = await Story.findOne({});
+        assert.equal(story.fans.length, 1);
+    });
+
     it('Cannot like story without token', async () => {
         const response = await request(app)
         .post(`/story/like/${idStory}`)
