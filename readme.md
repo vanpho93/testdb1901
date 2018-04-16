@@ -12,5 +12,5 @@
 
 √ Like binh luan, bo like binh luan
 
-- Gui yeu cau ket ban,
+√ Gui yeu cau ket ban,
     (khong) chap nhan ket ban, xoa yeu cau ket ban, xoa ket ban

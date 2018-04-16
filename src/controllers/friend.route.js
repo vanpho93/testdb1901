@@ -31,7 +31,7 @@ friendRouter.post('/decline/:idSender', (req, res) => {
 });
 
 friendRouter.post('/remove/:idFriend', (req, res) => {
-    Friend.removeFriend(req.idUser, req.params.idSender)
+    Friend.removeFriend(req.idUser, req.params.idFriend)
     .then(friend => res.send({ success: true, friend }))
     .catch(res.onError);
 });
