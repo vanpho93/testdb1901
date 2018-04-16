@@ -4,7 +4,7 @@ const { app } = require('../../../src/app');
 const { Friend } = require('../../../src/models/friend.model');
 const { User } = require('../../../src/models/user.model.js');
 
-describe.only('POST /friend/cancel/:_id', () => {
+describe('POST /friend/cancel/:_id', () => {
     let token1, idUser1, token2, idUser2, idUser3, token3;
 
     beforeEach('Create users for test', async () => {
