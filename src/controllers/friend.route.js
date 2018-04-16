@@ -18,9 +18,21 @@ friendRouter.post('/cancel/:idReceiver', (req, res) => {
     .catch(res.onError);
 });
 
+friendRouter.post('/accept/:idSender', (req, res) => {
+    Friend.acceptRequest(req.idUser, req.params.idSender)
+    .then(friend => res.send({ success: true, friend }))
+    .catch(res.onError);
+});
+
 friendRouter.post('/decline/:idSender', (req, res) => {
-    Friend.removeFriendRequest(req.idUser, req.params.idSender)
-    .then(sender => res.send({ success: true, sender }))
+    Friend.declineRequest(req.idUser, req.params.idSender)
+    .then(requestor => res.send({ success: true, requestor }))
+    .catch(res.onError);
+});
+
+friendRouter.post('/remove/:idFriend', (req, res) => {
+    Friend.removeFriend(req.idUser, req.params.idSender)
+    .then(friend => res.send({ success: true, friend }))
     .catch(res.onError);
 });
 

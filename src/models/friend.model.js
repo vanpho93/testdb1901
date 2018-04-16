@@ -39,9 +39,75 @@ class Friend {
         return receiver;
     }
 
-    static async acceptRequest(idUser, idRequestUser) {}
-    static async declineRequest(idUser, idRequestUser) {}
-    static async removeFriend(idUser, idFriend) {}
+    static async acceptRequest(idUser, idRequestUser) {
+        validateObjectIds(idUser, idRequestUser);
+        const queryUser = {
+            _id: idUser,
+            incommingRequests: { $eq: idRequestUser }
+        };
+        const updateUser = {
+            $pull: { incommingRequests: idRequestUser },
+            $push: { friends: idRequestUser },
+        };
+        const user = await User.findOneAndUpdate(queryUser, updateUser);
+        validateUserExist(user);
+        const queryFriend = {
+            _id: idRequestUser,
+            sentRequests: { $eq: idUser }
+        };
+        const updateFriend = {
+            $pull: { sentRequests: idUser },
+            $push: { friends: idUser },
+        };
+        const friend = await User.findOneAndUpdate(queryFriend, updateFriend, { feild: { name: 1 } });
+        validateUserExist(friend);
+        return friend;
+    }
+    
+    static async declineRequest(idUser, idRequestUser) {
+        validateObjectIds(idUser, idRequestUser);
+        const queryUser = {
+            _id: idUser,
+            incommingRequests: { $eq: idRequestUser }
+        };
+        const updateUser = {
+            $pull: { incommingRequests: idRequestUser }
+        };
+        const user = await User.findOneAndUpdate(queryUser, updateUser);
+        validateUserExist(user);
+        const queryRequestor = {
+            _id: idRequestUser,
+            sentRequests: { $eq: idUser }
+        };
+        const updateRequestor = {
+            $pull: { sentRequests: idUser }
+        };
+        const requestor = await User.findOneAndUpdate(queryRequestor, updateRequestor, { feild: { name: 1 } });
+        validateUserExist(requestor);
+        return requestor;
+    }
+    
+    static async removeFriend(idUser, idFriend) {
+        validateObjectIds(idUser, idFriend);
+        const queryUser = {
+            _id: idUser,
+            friends: { $eq: idFriend }
+        };
+        const updateUser = {
+            $pull: { friends: idFriend }
+        };
+        const user = await User.findOneAndUpdate(queryUser, updateUser);
+        validateUserExist(user);
+        const queryFriend = {
+            _id: idFriend,
+            friends: { $eq: idUser }
+        };
+        const updateFriend = {
+            $pull: { friends: idUser }
+        };
+        const friend = await User.findOneAndUpdate(queryFriend, updateFriend);
+        return friend;
+    }
 }
 
 module.exports = { Friend };
